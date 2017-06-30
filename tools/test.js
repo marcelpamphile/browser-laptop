@@ -12,10 +12,11 @@ const options = {
   shell: true
 }
 
-const intermittents = fs.readFileSync('./test/intermittents.txt')
+const intermittents = fs.readFileSync('./test/intermittents.md')
   .toString()
   .split('\n')
-  .filter((intermittent) => !intermittent.match(/^\s*$/) && !intermittent.match(/s*#/))
+  .filter((line) => !line.match(/^\s*$/) && !line.match(/s*#/))
+  .map((line) => line.startsWith('- ') ? line.substring(2) : line)
 
 let testCommand = 'standard'
 if (TEST_DIR !== 'lint') {
