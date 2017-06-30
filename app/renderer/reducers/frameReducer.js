@@ -128,7 +128,14 @@ const frameReducer = (state, action, immutableAction) => {
           }
           state = state.setIn(['frames', index, 'lastAccessedTime'], new Date().getTime())
 
-          state = frameStateUtil.updateTabPageIndex(state, frame)
+          // Only update tabPage if user is not hovering other page
+          // Otherwise each time the active tab is updated the tabPage
+          // will be updated as well. While we want that behavior not necessarily
+          // the user will be on the same tabPage as the active tab. See bug #9779
+          const isPreviewing = state.get('frames').some(frame => frame.get('hoverState'))
+          if (!isPreviewing) {
+            state = frameStateUtil.updateTabPageIndex(state, frame)
+          }
         }
       }
       break
